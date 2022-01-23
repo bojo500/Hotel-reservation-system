@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Room } from "./entities";
@@ -10,18 +16,21 @@ export class RoomsService {
   constructor(@InjectRepository(Room) private repository: Repository<Room>) {
   }
 
-  async create(createRoomDto: CreateRoomDto) {
+  async create(createRoomDto: CreateRoomDto): Promise<any> {
+    const item = await this.repository.findOne({ roomNub: createRoomDto.roomNub });
+    if (item) {
+      throw new BadRequestException(`The Room No.${createRoomDto.roomNub} is already exist`);
+    }
     try {
-      await this.repository.save(createRoomDto);
+      await this.create(createRoomDto);
     } catch {
       throw new InternalServerErrorException();
     }
     return {
       message: "Created Successfully",
-      statusCode: HttpStatus.CREATED
+      statusCode: HttpStatus.CREATED,
     };
   }
-
 
   findAll() {
     return this.repository.find();
@@ -46,7 +55,7 @@ export class RoomsService {
   async remove(id: number) {
     let item = await this.findOne(id);
     if (!item) {
-      throw new NotFoundException();
+      throw new NotFoundException(`The Room No.${id} is not exist`);
     }
     try {
       await this.repository.delete(item.id);

@@ -17,9 +17,9 @@ export class UsersService {
   }
 
   async create(CreateUserDto: CreateUserDto): Promise<any> {
-    const user = await this.findOne(CreateUserDto.username);
+    const user = await this.findOne(CreateUserDto.userName);
     if (user) {
-      throw new BadRequestException('The User is Already exists ');
+      throw new BadRequestException("The User is Already exists ");
     }
     try {
       await this.repository.save(CreateUserDto);
@@ -27,17 +27,17 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
     return {
-      message: 'User Created Successfully',
-      statusCode: HttpStatus.CREATED,
+      message: "User Created Successfully",
+      statusCode: HttpStatus.CREATED
     };
   }
 
   findAll() {
-    return this.repository.find({ relations: ["blogOnes"] });
+    return this.repository.find();
   }
 
   findOne(id: string) {
-    return this.repository.findOne(id, { relations: ["blogOnes"] });
+    return this.repository.findOne(id);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -47,8 +47,8 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
     return {
-      message: 'User Updated Successfully',
-      statusCode: HttpStatus.OK,
+      message: "User Updated Successfully",
+      statusCode: HttpStatus.OK
     };
   }
 
@@ -63,8 +63,8 @@ export class UsersService {
       throw new InternalServerErrorException();
     }
     return {
-      message: 'User Deleted Successfully',
-      statusCode: HttpStatus.OK,
+      message: "User Deleted Successfully",
+      statusCode: HttpStatus.OK
     };
   }
 

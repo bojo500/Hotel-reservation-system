@@ -9,10 +9,11 @@ import {
 } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from "./guards";
+import { ForgetPasswordDto } from "./dto";
 import { User } from "../users/entities/user.entity";
 import { RegisterDto } from "../users/dto";
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   /**
@@ -35,6 +36,16 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   public async register(@Body() userData: RegisterDto): Promise<User> {
     return this.authService.register(userData);
+  }
+
+  /**
+   * to get the forgot Password
+   * @param forgotPasswordDto
+   */
+  @Post('forgot/password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() forgotPasswordDto: ForgetPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto.email);
   }
 
 }

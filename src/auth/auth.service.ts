@@ -71,7 +71,13 @@ export class AuthService {
       statusCode: HttpStatus.BAD_REQUEST,
     });
   }
-w
+
+  /**
+   *   forget password function
+   */
+  async forgotPassword(email: string): Promise<User> {
+    return await this.usersService.findOneByEmail(email);
+  }
 
   async checkAuth(token: string): Promise<TokenPayloadInterface> {
     let verifyObject: TokenPayloadInterface;

@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   HttpCode,
-
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto, UpdateUserDto } from "./dto";
@@ -22,6 +21,13 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+
+
+  @Post("uploadimg")
+  createUserImage(@Body() id: string, imagePath: string) {
+    return this.usersService.updateUserImageById( id , imagePath);
+  }
+
 
   @Get()
   findAll() {
@@ -46,4 +52,3 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 }
-

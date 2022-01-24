@@ -23,4 +23,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
+  @ApiProperty()
+  imagePath: string;
 }

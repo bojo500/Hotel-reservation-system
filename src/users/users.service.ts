@@ -8,8 +8,10 @@ import {
 import { CreateUserDto, UpdateUserDto } from "./dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 import { RegisterDto } from "./dto";
+import { from, Observable } from "rxjs";
+
 
 @Injectable()
 export class UsersService {
@@ -83,4 +85,12 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<User> {
     return this.repository.findOne({email});
   }
+
+  updateUserImageById(id: string, imagePath: string): Observable<UpdateResult> {
+    const user: User = new User();
+    user.id = id;
+    user.imagePath = imagePath;
+    return from(this.repository.update(id, user));
+  }
+
 }

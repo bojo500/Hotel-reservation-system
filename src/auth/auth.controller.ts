@@ -1,21 +1,13 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards,
-} from "@nestjs/common";
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from "./guards";
-import { ForgetPasswordDto } from "./dto";
+import { Controller, Post, UseGuards, Request, Get, HttpCode, HttpStatus, Body } from "@nestjs/common";
+import { AuthService } from "./auth.service";
 import { User } from "../users/entities/user.entity";
 import { RegisterDto } from "../users/dto";
+import { JwtAuthGuard, LocalAuthGuard } from "./guards";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
+
   /**
    * the login
    * @param req
@@ -25,6 +17,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   public async login(@Request() req, @Body() body): Promise<User> {
+    console.log({reqUser : req.user})
+    console.log({body})
     return this.authService.login(req.user);
   }
 
@@ -38,14 +32,9 @@ export class AuthController {
     return this.authService.register(userData);
   }
 
-  /**
-   * to get the forgot Password
-   * @param forgotPasswordDto
-   */
-  @Post('forgot/password')
-  @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body() forgotPasswordDto: ForgetPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto.email);
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
-
 }

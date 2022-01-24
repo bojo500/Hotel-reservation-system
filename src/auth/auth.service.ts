@@ -1,23 +1,20 @@
 import {
   BadRequestException,
-  forwardRef,
   HttpStatus,
-  Inject,
   Injectable,
-  InternalServerErrorException,
-  UnauthorizedException
+  InternalServerErrorException, UnauthorizedException
 } from "@nestjs/common";
-import { UsersService } from "../users/users.service";
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcrypt";
-import { JwtService } from "@nestjs/jwt";
-import { TokenPayloadInterface } from "./interfaces";
+import { UsersService } from "../users/users.service";
 import { User } from "../users/entities/user.entity";
 import { RegisterDto } from "../users/dto";
+import { TokenPayloadInterface } from "./interfaces";
 
-@Injectable()
-export class AuthService {
+@Injectable()export class AuthService {
+
   constructor(
-    @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {
   }
@@ -35,7 +32,8 @@ export class AuthService {
   }
 
   async login(user: any): Promise<any> {
-    let payload: TokenPayloadInterface;
+    console.log({user})
+    let payload : TokenPayloadInterface;
     try {
       payload = { email: user.email, sub: user.id };
     } catch (e) {
@@ -70,13 +68,6 @@ export class AuthService {
       message,
       statusCode: HttpStatus.BAD_REQUEST,
     });
-  }
-
-  /**
-   *   forget password function
-   */
-  async forgotPassword(email: string): Promise<User> {
-    return await this.usersService.findOneByEmail(email);
   }
 
   async checkAuth(token: string): Promise<TokenPayloadInterface> {

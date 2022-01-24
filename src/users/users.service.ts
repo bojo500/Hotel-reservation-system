@@ -13,7 +13,7 @@ import { RegisterDto } from "./dto";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repository: Repository<User>) {
+  constructor(@InjectRepository(User) public repository: Repository<User>) {
   }
 
   async create(CreateUserDto: CreateUserDto): Promise<any> {
@@ -81,6 +81,6 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    return this.repository.findOne(email);
+    return this.repository.findOne({email});
   }
 }

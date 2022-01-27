@@ -83,4 +83,17 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<User> {
     return this.repository.findOne({email});
   }
+
+
+  async save(id: string, updateUserDto: UpdateUserDto.picture): Promise<any> {
+    try {
+      await this.repository.update(id, updateUserDto);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+    return {
+      message: "User Updated Successfully",
+      statusCode: HttpStatus.OK
+    };
+  }
 }

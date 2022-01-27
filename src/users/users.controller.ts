@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  HttpCode,
-
+  HttpCode, UseInterceptors, HttpStatus
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto, UpdateUserDto } from "./dto";
 import { Role, Roles } from "./enum";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { Helper } from "../shared/helper";
+import { identity } from "rxjs";
 
 @Controller("users")
 export class UsersController {
@@ -22,6 +25,21 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+
+  @Post("file-upload")
+  @UseInterceptors(
+    FileInterceptor("picture", {
+      storage: diskStorage({
+        destination: Helper.destinationPath,
+        filename: Helper.customFileName
+      })
+    })
+  )
+  uploadfile(id: string, updateUserDto: UpdateUserDto.picture) {
+      return this.usersService.save( id, updateUserDto);
+  }
+
+
 
   @Get()
   findAll() {

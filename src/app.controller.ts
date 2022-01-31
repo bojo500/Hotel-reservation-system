@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Res } from "@nestjs/common";
 import { AppService } from './app.service';
 
 @Controller()
@@ -9,4 +9,10 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('upload/:filePath')
+  seeUploadedFile(@Param('filePath') image, @Res() res) {
+    return res.sendFile(image, { root: './upload' });
+  }
+
 }

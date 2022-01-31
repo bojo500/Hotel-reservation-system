@@ -11,7 +11,7 @@ export class Helper {
     cb(null, originalName + '-' + uniqueSuffix+"."+fileExtension);
   }
 
-  static destinationPath(req, file, cb) {
-    cb(null, './images/')
+  static destinationPath() {
+     return './images'
   }
 }

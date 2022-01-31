@@ -1,5 +1,6 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../enum";
+import { UserImagesEntity } from "../user-images.entity";
 
 
 @Entity()
@@ -20,15 +21,27 @@ export class User {
   @Column({ unique: true })
   userName: string;
 
+  @Column({ nullable: true })
+  image: string;
+
   @Column()
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
-  picture: string;
-
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  @Column({ type: "enum", enum: Role, default: Role.USER })
   role: Role;
+
+  @OneToMany(() => UserImagesEntity, (image: UserImagesEntity) => image.user, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'user_images',
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
+    inverseJoinColumn:
+      { name: 'mediaId', referencedColumnName: 'mediaId' },
+  })
+  images: UserImagesEntity[];
+
 }
